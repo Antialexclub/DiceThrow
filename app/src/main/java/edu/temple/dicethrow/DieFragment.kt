@@ -58,7 +58,17 @@ class DieFragment : Fragment() {
     }
 
     fun throwDie() {
-        dieTextView.text = Random.nextInt(dieSides + 1).toString()
-        currentRoll = Random.nextInt()
+        dieTextView.text = currentRoll.toString()
+        currentRoll = Random.nextInt(dieSides)
     }
+
+    companion object {
+        fun newInstance (sides: Int) = DieFragment.apply{
+            arguments = Bundle().apply{
+                putInt(DIESIDE, sides)
+            }
+        }
+    }
+
+
 }
