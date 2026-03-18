@@ -10,32 +10,40 @@ import kotlin.random.Random
 
 class DieFragment : Fragment() {
 
-    val DIESIDE = "sidenumber"
+    private val ROLL_KEY = "current_roll"
+    private lateinit var dieTextView: TextView
 
-    private val ROLL_KEY = "current_role"
-    lateinit var dieTextView: TextView
+    private var currentRoll = 1
+    private var dieSides: Int = 6
 
-    var currentRoll = 1
+    companion object {
+        const val DIESIDE = "sidenumber"
 
-    var dieSides: Int = 6
+        fun newInstance(sides: Int = 6): DieFragment {
+            return DieFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(DIESIDE, sides)
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         arguments?.let {
-            it.getInt(DIESIDE).run {
-                dieSides = this
-            }
+            dieSides = it.getInt(DIESIDE)
         }
-       savedInstanceState?.run{
-           currentRoll = getInt(ROLL_KEY)
-       }
+
+        savedInstanceState?.let {
+            currentRoll = it.getInt(ROLL_KEY, 1)
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_die, container, false).apply {
             dieTextView = findViewById(R.id.dieTextView)
         }
@@ -43,32 +51,16 @@ class DieFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (currentRoll == 0)
-        throwDie()
-        else
-            dieTextView.text = currentRoll.toString()
-
-
+        dieTextView.text = currentRoll.toString()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
         outState.putInt(ROLL_KEY, currentRoll)
     }
 
     fun throwDie() {
+        currentRoll = Random.nextInt(1, dieSides + 1)
         dieTextView.text = currentRoll.toString()
-        currentRoll = Random.nextInt(dieSides)
     }
-
-    companion object {
-        fun newInstance (sides: Int) = DieFragment.apply{
-            arguments = Bundle().apply{
-                putInt(DIESIDE, sides)
-            }
-        }
-    }
-
-
 }

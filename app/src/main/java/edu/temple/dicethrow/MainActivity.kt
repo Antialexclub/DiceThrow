@@ -12,17 +12,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val disFragment = DieFragment.newInstance(20)
-        supportFragmentManager.beginTransaction()
-            .add(R.id.fragmentContainerView, DieFragment)
-            .commit()
+        if (savedInstanceState == null){
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, DieFragment.newInstance(6))
+                .replace(R.id.fragmentContainerView2, DieFragment.newInstance(10))
+                .commit()
 
-        findViewById<Button>(R.id.rollDiceButton).setOnClickListener{
-            supportFragmentManager
-                .findFragmentById(R.id.fragmentContainerView)?.run{
-                    (this as DieFragment).throwDie()
-                }
 
+        }
+
+        val rollbutton = findViewById<Button>(R.id.rollDiceButton)
+        rollbutton.setOnClickListener {
+            val dieFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView)
+            as? DieFragment
+            dieFragment?.throwDie()
+
+            val dieFragment2 = supportFragmentManager.findFragmentById(R.id.fragmentContainerView2)
+                    as? DieFragment
+            dieFragment2?.throwDie()
         }
     }
 }
